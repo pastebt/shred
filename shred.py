@@ -32,12 +32,15 @@ class ZERO(SRC):
 def do_one(fn, src, verbose):
     with open(fn, "r+b") as fout:
         fout.seek(0, os.SEEK_END)
-        sz = fout.tell()
+        size = left = fout.tell()
         fout.seek(0, os.SEEK_SET)
-        while sz > len(src):
+        while left > len(src):
             fout.write(src())
-        if sz:
-            fout.write(src(sz))
+            left = left - len(src)
+            if verbose:
+                print("%02.2f%%\r" % (size - left) * 100.0 / size)
+        if left:
+            fout.write(src(left))
 
 
 def run(fn, unlink, set_zero, verbose):
