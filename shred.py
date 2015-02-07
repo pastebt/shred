@@ -2,11 +2,12 @@
 
 import os
 import sys
+import random
 from getopt import gnu_getopt, GetoptError
 
 
 class SRC(object):
-    def __init__(self, s=10240):
+    def __init__(self, s=102400):
         self.s = s
 
     def __len__(self):
@@ -20,8 +21,10 @@ class SRC(object):
 
 
 class RAND(SRC):
+    dat = 'aabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
     def gen(self, size):
-        return ("a" * size).encode("utf8")
+        return (random.choice(self.dat) * size).encode("utf8")
 
 
 class ZERO(SRC):
@@ -42,18 +45,24 @@ def do_one(fn, src, verbose):
         if left:
             fout.write(src(left))
         if verbose:
-            print("100.0%")
+            print("100.0% ")
 
 
 def run(fn, num, unlink, set_zero, verbose):
+    if not os.path.exists(fn):
+        sys.stderr.write("Error! can not find file " + fn + "\n")
+        sys.exit(1)
+
     for i in range(num):
         if verbose:
             print("Overwrite time %d:" % (i + 1))
         do_one(fn, RAND(), verbose)
+
     if set_zero:
         if verbose:
             print("Overwrite with zero")
         do_one(fn, ZERO(), verbose)
+
     if unlink:
         if verbose:
             print("Remove file")
