@@ -6,40 +6,25 @@ import random
 from getopt import gnu_getopt, GetoptError
 
 
-class SRC(object):
-    def __init__(self, s=102400):
-        self.s = s
-
-    def __len__(self):
-        return self.s
-
-    def __call__(self, sz=None):
-        return self.gen(sz if sz else self.s)
-
-    def gen(self, size):
-        pass
-
-
-class RAND(SRC):
+def RAND(size):
     dat = 'aabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-    def gen(self, size):
-        return (random.choice(self.dat) * size).encode("utf8")
+    return (random.choice(dat) * size).encode("utf8")
 
 
-class ZERO(SRC):
-    def gen(self, size):
-        return ("0" * size).encode("utf8")
+def ZERO(size):
+    return ("0" * size).encode("utf8")
 
 
 def do_one(fn, src, verbose):
+    bsize = 102400
     with open(fn, "r+b") as fout:
         fout.seek(0, os.SEEK_END)
         size = left = fout.tell()
         fout.seek(0, os.SEEK_SET)
-        while left > len(src):
-            fout.write(src())
-            left = left - len(src)
+        while left >= bsize:
+            fout.write(src(bsize))
+            fout.flush()
+            left = left - bsize
             if verbose:
                 sys.stdout.write("%02.2f%%\r" % ((size - left) * 100.0 / size))
         if left:
@@ -56,12 +41,12 @@ def run(fn, num, unlink, set_zero, verbose):
     for i in range(num):
         if verbose:
             print("Overwrite time %d:" % (i + 1))
-        do_one(fn, RAND(), verbose)
+        do_one(fn, RAND, verbose)
 
     if set_zero:
         if verbose:
             print("Overwrite with zero")
-        do_one(fn, ZERO(), verbose)
+        do_one(fn, ZERO, verbose)
 
     if unlink:
         if verbose:
