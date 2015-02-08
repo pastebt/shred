@@ -7,7 +7,7 @@ from getopt import gnu_getopt, GetoptError
 
 
 def RAND(size):
-    dat = 'aabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    dat = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return (random.choice(dat) * size).encode("utf8")
 
 
