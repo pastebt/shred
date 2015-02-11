@@ -12,7 +12,8 @@ def RAND(size):
 
 
 def ZERO(size):
-    return ("0" * size).encode("utf8")
+    #return ("0" * size).encode("utf8")
+    return bytearray(size)
 
 
 def do_one(fn, src, verbose):
