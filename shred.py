@@ -38,7 +38,7 @@ def run(fn, num, unlink, set_zero, verbose):
     if not os.path.exists(fn):
         sys.stderr.write("Error! can not find file " + fn + "\n")
         sys.exit(1)
-
+    print("\nshred file " + fn)
     for i in range(num):
         if verbose:
             print("Overwrite time %d:" % (i + 1))
@@ -70,10 +70,11 @@ def main():
     except GetoptError as ge:
         print(ge)
         usage()
-    if len(args) != 1:
+    if len(args) < 1:
         usage()
     om = dict(opts)
-    run(args[0], int(om.get("-n", 3)), "-u" in om, "-z" in om, "-v" in om)
+    for fn in args:
+        run(fn, int(om.get("-n", 3)), "-u" in om, "-z" in om, "-v" in om)
 
 
 if __name__ == '__main__':
