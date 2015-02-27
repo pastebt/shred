@@ -34,6 +34,21 @@ def do_one(fn, src, verbose):
             print("100.0% ")
 
 
+def delete(fn, verbose):
+    dn = os.path.dirname(fn)
+    nl = len(os.path.basename(fn))
+    on = fn
+    while nl > 0:
+        nn = os.path.join(dn, "0" * nl)
+        if verbose:
+            print("rename %s to %s" % (on, nn))
+        os.rename(on, nn)
+        on = nn
+        nl = nl - 1
+    if verbose:
+        print("Remove file " + nn)
+    os.unlink(nn)
+
 def run(fn, num, unlink, set_zero, verbose):
     if not os.path.exists(fn):
         sys.stderr.write("Error! can not find file " + fn + "\n")
@@ -50,9 +65,7 @@ def run(fn, num, unlink, set_zero, verbose):
         do_one(fn, ZERO, verbose)
 
     if unlink:
-        if verbose:
-            print("Remove file")
-        os.unlink(fn)
+        delete(fn, verbose)
 
 
 def usage():
