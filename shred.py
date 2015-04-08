@@ -69,7 +69,7 @@ def run(fn, num, unlink, set_zero, verbose):
 
 
 def usage():
-    print("Usage: " + sys.argv[0] + " [-v|-u|-z|] [-n N]filename")
+    print("Usage: " + sys.argv[0] + " [-v|-u|-z] [-n N] filename")
     print("     -n N overwrite N times instead of the default (3)")
     print("     -u   truncate and remove file after overwriting")
     print("     -v   show progress")
