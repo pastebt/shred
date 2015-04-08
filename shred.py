@@ -2,6 +2,7 @@
 
 import os
 import sys
+import glob
 import random
 from getopt import gnu_getopt, GetoptError
 
@@ -49,6 +50,7 @@ def delete(fn, verbose):
         print("Remove file " + nn)
     os.unlink(nn)
 
+
 def run(fn, num, unlink, set_zero, verbose):
     if not os.path.exists(fn):
         sys.stderr.write("Error! can not find file " + fn + "\n")
@@ -68,8 +70,16 @@ def run(fn, num, unlink, set_zero, verbose):
         delete(fn, verbose)
 
 
+def is_win32():
+    return sys.platform == 'win32'
+
+
 def usage():
-    print("Usage: " + sys.argv[0] + " [-v|-u|-z] [-n N] filename")
+    if is_win32():
+        print("Usage: " + sys.argv[0] + " [-v|-u|-z] [-n N] [-g] filename")
+        print("     -g   support glob path in unix shell")
+    else:
+        print("Usage: " + sys.argv[0] + " [-v|-u|-z] [-n N] filename")
     print("     -n N overwrite N times instead of the default (3)")
     print("     -u   truncate and remove file after overwriting")
     print("     -v   show progress")
@@ -78,14 +88,20 @@ def usage():
 
 
 def main():
+    if is_win32():
+        o = "gvuzn:"
+    else:
+        o = "vuzn:"
     try:
-        opts, args = gnu_getopt(sys.argv[1:], "vuzn:")
+        opts, args = gnu_getopt(sys.argv[1:], o)
     except GetoptError as ge:
         print(ge)
         usage()
     if len(args) < 1:
         usage()
     om = dict(opts)
+    if '-g' in om:
+        args = glob.iglob(args[0])
     for fn in args:
         run(fn, int(om.get("-n", 3)), "-u" in om, "-z" in om, "-v" in om)
 
