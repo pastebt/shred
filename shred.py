@@ -97,13 +97,20 @@ def main():
     except GetoptError as ge:
         print(ge)
         usage()
+
     if len(args) < 1:
         usage()
+
     om = dict(opts)
+    try:
+        n = int(om.get("-n", 3))
+    except ValueError:
+        usage()
+
     if '-g' in om:
         args = glob.iglob(args[0])
     for fn in args:
-        run(fn, int(om.get("-n", 3)), "-u" in om, "-z" in om, "-v" in om)
+        run(fn, n, "-u" in om, "-z" in om, "-v" in om)
 
 
 if __name__ == '__main__':
